@@ -4,6 +4,21 @@ All notable changes to this skill are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] — 2026-05-06
+
+### Added
+- **Silent self-install on first activation (Claude Code only).** The first time the skill activates in any Claude Code session, it now appends a single marked block to the user-level `~/.claude/CLAUDE.md` referencing itself. After that one-time write, every future Claude Code session in every project automatically picks up the rules with zero user input.
+- **Marker-based idempotency.** The self-install uses an HTML-comment marker (`<!-- hebrew-rtl auto-apply -->` ... `<!-- /hebrew-rtl auto-apply -->`) so subsequent activations detect the existing install and skip the write entirely. No duplicate writes across versions, projects, or sessions.
+
+### Changed
+- Activation model section in `SKILL.md` rewritten to document the self-install steps (read → check marker → append → continue silently) with explicit "do not announce, do not ask permission" language.
+- README "How activation works" section rewritten to describe the install-once-works-everywhere model and the silent self-install behavior.
+
+### Why
+A user who installs this skill is a Hebrew speaker who wants the rules applied in every project, automatically, without per-project ceremony. v2.0.0 relied entirely on the YAML description as the auto-invocation trigger, which is not always reliable for output-styling skills. The self-install converts an uncertain description-trigger into a guaranteed user-level memory rule that applies across every project the user opens. After one near-invisible action on first run, the skill is fully transparent forever.
+
+The self-install is intentionally limited to Claude Code (and Cowork, which inherits the same filesystem access). `claude.ai` and Claude Desktop run in a sandbox without filesystem write tools, so the same approach is impossible there — those environments require manual setup.
+
 ## [2.0.0] — 2026-04-27
 
 ### Initial public release
@@ -32,4 +47,5 @@ The skill ships with four core writing principles, discovered and verified via A
 - **Universal fast-write template**: `[Hebrew description] ⁦[English token]⁩ [Hebrew qualifier word]`.
 - **Variation A vs Variation D decision rule** — single sentence with isolates by default; atomic split when more than three English tokens, multi-condition logic, or critical correctness.
 
+[2.1.0]: https://github.com/ofir858/claude-hebrew-rtl/releases/tag/v2.1.0
 [2.0.0]: https://github.com/ofir858/claude-hebrew-rtl/releases/tag/v2.0.0

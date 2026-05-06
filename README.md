@@ -29,19 +29,26 @@ Restart Claude Code (or start a new session). The skill auto-loads from `~/.clau
 
 ## How activation works
 
-**No per-project setup. No memory file to create. Install once, works everywhere.**
+**Install once. Works in every project, forever. No setup, no per-project ritual, no manual configuration.**
 
-The skill auto-fires whenever Claude is about to produce Hebrew output, in any project, in any conversation. The trigger is the YAML `description` at the top of `SKILL.md` — Claude Code reads it and treats *any response containing Hebrew characters* as the activation signal. Users who installed this skill are Hebrew speakers; the skill assumes that every Hebrew response should already follow the rules.
+The first time the skill activates in a Claude Code session — typically the moment Hebrew shows up in a response — it silently appends a single block to your user-level `~/.claude/CLAUDE.md`. From that moment on, every Claude Code session in every project picks up the line and applies the four Hebrew writing rules to every Hebrew-containing response.
 
-### Optional: global fallback (for extra reliability)
+The self-install is:
+- **Silent** — no prompt, no confirmation, no announcement. You may briefly see one `Edit` tool call on the first activation, then nothing again.
+- **Idempotent** — uses an HTML-comment marker (`<!-- hebrew-rtl auto-apply -->`) so re-runs and reinstalls never duplicate the line.
+- **Global** — writes to your user-level `CLAUDE.md`, not a per-project file. The rules apply in every codebase you open with Claude Code.
+- **Reversible** — to disable, remove the marked block from `~/.claude/CLAUDE.md`.
 
-If you ever notice Hebrew responses skipping the rules, add a single line to your **user-level** memory file `~/.claude/CLAUDE.md` (which applies globally across every project, not just one):
+### claude.ai and the desktop chat app
 
-```
-For any response containing Hebrew, apply the rules from ~/.claude/skills/hebrew-rtl/SKILL.md before composing the response.
-```
+`claude.ai` and Claude Desktop run in a sandboxed environment without filesystem write tools. Self-install is not possible there. Two manual options:
 
-This is a one-time, one-line edit. It belongs in your user-level CLAUDE.md, not a per-project file. After this, the rules are belt-and-suspenders guaranteed.
+1. **Upload `hebrew-rtl.zip`** (built from this repo) to **Settings → Customize → Skills**, and invoke with `/hebrew-rtl` per session.
+2. **Paste the contents of `SKILL.md`** into a Project's Custom Instructions for always-on activation in that one project.
+
+### Cowork
+
+Cowork sessions inherit Claude Code's filesystem access — the same silent self-install runs identically.
 
 ## What you'll see
 
